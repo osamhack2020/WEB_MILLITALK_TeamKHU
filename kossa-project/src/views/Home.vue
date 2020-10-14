@@ -57,30 +57,35 @@
 
           <v-col>
             <v-sheet
-              class="createPost"
+              class="newPost"
               max-width="90vh"
-              min-height="15vh"
+              min-height="10vh"
               rounded="lg"
             >
-              <div>
-                <v-select
-                  class="tag"
-                  :items="board"
-                  prepend-icon="mdi-music-accidental-sharp"
-                  dense
-                  label="태그"
-                ></v-select>
-              </div>
-              <div>
-                <v-icon class="profil_circle"
-                  >mdi-account-circle-outline</v-icon
-                >
-                <textarea
-                  class="description"
-                  placeholder="고민을 말해주세요"
-                ></textarea>
-                <v-btn class="submit" rounded>등록</v-btn>
-              </div>
+              <v-icon>mdi-music-accidental-sharp</v-icon>
+              <v-select
+                class="tag"
+                :items="board"
+                solo
+                dense
+                color="none"
+                lavel="Tag"
+                v-model="new_posts_tag"
+              ></v-select>
+              <v-btn class="submit" rounded height="30px" @click="createPost"
+                >등록</v-btn
+              >
+              <v-divider class="devider"></v-divider>
+              <v-textarea
+                class="description"
+                label="당신의 고민을 말해주세요"
+                prepend-icon="mdi-account-circle-outline"
+                height="120px"
+                solo
+                no-resize
+                color="black"
+                v-model="new_post"
+              />
             </v-sheet>
             <v-sheet
               class="postsBoard"
@@ -88,7 +93,10 @@
               min-height="70vh"
               rounded="lg"
             >
-              <!--  -->
+              <!-- 게시글 -->
+              <v-sheet>
+                sak;djsakl;d
+              </v-sheet>
             </v-sheet>
           </v-col>
         </v-row>
@@ -100,44 +108,74 @@
 <script>
 export default {
   data: () => ({
-    board: ["군생활", "연애", "부조리", "건의사항", "운동", "기타"]
-  })
+    board: ["군생활", "연애", "부조리", "건의사항", "운동", "기타"],
+    new_post: "",
+    new_posts_tag: ""
+  }),
+  methods: {
+    createPost() {
+      // Add a new document in collection "cities"
+      this.$firebase
+        .firestore()
+        .collection("post")
+        .add({
+          content: this.new_post,
+          tag: this.new_posts_tag
+        })
+        .then(docRef => {
+          console.log("Document written with ID: ", docRef.id);
+          this.new_post = "";
+          this.new_posts_tag = "";
+        })
+        .catch(function(error) {
+          console.error("Error adding document: ", error);
+        });
+    }
+  }
 };
 </script>
 <style scoped>
-textarea {
-  outline: none;
-}
 .header_logo {
   width: 165px;
   height: 55px;
   margin-right: 20px;
 }
-.createPost {
+.newPost {
+  height: 220px;
   margin-bottom: 20px;
-  padding: 10px 20px 10px 20px;
-  display: grid;
-  grid-template-rows: 1fr 2fr;
+  padding: 20px 20px 0 20px;
 }
 .profil_circle {
   position: relative;
   top: -60px;
 }
-.description {
-  overflow-y: scroll;
-  padding-left: 8px;
-  width: 88%;
-  height: 78px;
-}
-.tag {
-  width: 30%;
-  height: 30px;
-}
 .submit {
   font-weight: bold;
-  position: relative;
-  top: -14px;
-  right: -7px;
   color: white;
+  float: right;
+  width: 80px;
+  margin-top: 5px;
+}
+.tag {
+  display: inline-block;
+  position: relative;
+  right: -8px;
+  width: 120px;
+  font-size: 13px;
+}
+.description {
+  position: relative;
+  top: -5px;
+  font-size: 14px;
+}
+.devider {
+  position: relative;
+  top: -15px;
+}
+.v-text-field--box .v-input__slot,
+.v-text-field--outline .v-input__slot {
+  min-height: auto !important;
+  display: flex !important;
+  align-items: center !important;
 }
 </style>

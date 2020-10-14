@@ -22,8 +22,4 @@ export default {
   methods: {}
 };
 </script>
-<style scoped>
-button {
-  height: 500px;
-}
-</style>
+<style scoped></style>
